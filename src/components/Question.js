@@ -1,9 +1,25 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 
 function Question({ question, onAnswered }) {
   const [timeRemaining, setTimeRemaining] = useState(10);
 
-  // add useEffect code
+  // ✅ Countdown timer logic using useEffect
+  useEffect(() => {
+    if (timeRemaining === 0) {
+      setTimeRemaining(10);        // reset timer for next question
+      onAnswered(false);           // treat as incorrect answer
+      return;                      // stop countdown
+    }
+
+    const timeoutId = setTimeout(() => {
+      setTimeRemaining((prevTime) => prevTime - 1);
+    }, 1000);
+
+    // 🧹 Cleanup: prevent memory leaks or overlapping timers
+    return () => clearTimeout(timeoutId);
+
+  }, [timeRemaining, onAnswered]);
 
   function handleAnswer(isCorrect) {
     setTimeRemaining(10);
@@ -30,3 +46,4 @@ function Question({ question, onAnswered }) {
 }
 
 export default Question;
+
